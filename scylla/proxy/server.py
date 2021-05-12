@@ -16,7 +16,7 @@ httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClien
 
 
 def get_proxy(https=False) -> ProxyIP:
-    proxies: [ProxyIP] = ProxyIP.select().where(ProxyIP.is_valid == True).where(ProxyIP.stability >= 0.9)
+    proxies: [ProxyIP] = ProxyIP.select().where(ProxyIP.is_valid == True).where(ProxyIP.stability >= 0.9).where(ProxyIP.is_anonymous == True)
 
     if https:
         proxies = proxies.where(ProxyIP.is_https == True)
