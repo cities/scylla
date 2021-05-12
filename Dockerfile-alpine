@@ -1,6 +1,6 @@
 FROM python:3.9-alpine as build
 
-RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl-dev openssl-dev
+RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl curl-dev openssl-dev git
 
 RUN mkdir -p /var/www/scylla
 WORKDIR /var/www/scylla
@@ -11,9 +11,9 @@ FROM python:3.9-alpine
 
 LABEL maintainer="WildCat <wildcat.name@gmail.com>"
 
-RUN apk add --update --no-cache libxslt-dev
+RUN apk add --update --no-cache libxslt-dev curl-dev
 
-COPY --from=build /usr/local/lib/python3.6/site-packages/ /usr/local/lib/python3.6/site-packages/
+COPY --from=build /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 
 WORKDIR /var/www/scylla
 VOLUME /var/www/scylla
