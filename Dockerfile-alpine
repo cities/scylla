@@ -1,11 +1,15 @@
 FROM python:3.9-alpine as build
 
-RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl curl-dev openssl-dev git
+RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl curl-dev openssl-dev patch
 
 RUN mkdir -p /var/www/scylla
 WORKDIR /var/www/scylla
 
 RUN pip install scylla
+
+COPY 70b7050abe.patch ./
+RUN cd /usr/local/lib/python3.9/site-packages \
+    && patch -p1 < /var/www/scylla/70b7050abe.patch
 
 FROM python:3.9-alpine
 

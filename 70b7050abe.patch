@@ -1,0 +1,32 @@
+commit 70b7050abe23498727bcb87bbcaeefc9a3925ad5
+Author: lmwang9527 <lmwang@gmail.com>
+Date:   Wed May 12 01:40:29 2021 +0000
+
+    only use anonymous proxy for server; fix a minor bug in logger.error
+
+diff --git a/scylla/proxy/server.py b/scylla/proxy/server.py
+index cf14e10..6f7835c 100644
+--- a/scylla/proxy/server.py
++++ b/scylla/proxy/server.py
+@@ -16,7 +16,7 @@ httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClien
+ 
+ 
+ def get_proxy(https=False) -> ProxyIP:
+-    proxies: [ProxyIP] = ProxyIP.select().where(ProxyIP.is_valid == True).where(ProxyIP.stability >= 0.9)
++    proxies: [ProxyIP] = ProxyIP.select().where(ProxyIP.is_valid == True).where(ProxyIP.stability >= 0.9).where(ProxyIP.is_anonymous == True)
+ 
+     if https:
+         proxies = proxies.where(ProxyIP.is_https == True)
+diff --git a/scylla/scheduler.py b/scylla/scheduler.py
+index eedaaec..f927315 100644
+--- a/scylla/scheduler.py
++++ b/scylla/scheduler.py
+@@ -32,7 +32,7 @@ def fetch_ips(q: Queue, validator_queue: Queue):
+                 try:
+                     html = worker.get_html(url, render_js=provider.should_render_js())
+                 except Exception as e:
+-                    logger.error("worker.get_html failed: ", e)
++                    logger.exception(e)
+                     continue
+ 
+                 if html:

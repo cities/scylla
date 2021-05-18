@@ -1,9 +1,10 @@
 version: "3"
 services:
   scylla:
+    image: scylla-alpine:v3
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-alpine
     ports:
       - "127.0.0.1:8899:8899"
       - "127.0.0.1:8081:8081"
