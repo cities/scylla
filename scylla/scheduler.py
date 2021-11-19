@@ -32,11 +32,7 @@ def fetch_ips(q: Queue, validator_queue: Queue):
                 try:
                     html = worker.get_html(url, render_js=provider.should_render_js())
                 except Exception as e:
-<<<<<<< HEAD
                     logger.exception(e)
-=======
-                    logger.error("worker.get_html failed: %s", e)
->>>>>>> upstream/main
                     continue
 
                 if html:

@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-version: "3"
-services:
-  scylla:
-    image: scylla-alpine:v3
-    build:
-      context: .
-      dockerfile: Dockerfile-alpine
-    ports:
-      - "127.0.0.1:8899:8899"
-      - "127.0.0.1:8081:8081"
-    volumes:
-      - /var/www/scylla:/var/www/scylla
-=======
 version: '3.8'
 
 services:
@@ -22,6 +8,5 @@ services:
     volumes:
       - /var/www/scylla:/var/www/scylla
     ports:
-      - "8899:8899"
-      - "8081:8081"
->>>>>>> upstream/main
+      - "127.0.0.1:8899:8899"
+      - "127.0.0.1:8081:8081"
