@@ -7,11 +7,7 @@ WORKDIR /var/www/scylla
 
 RUN pip install scylla
 
-COPY 70b7050abe.patch ./
-RUN cd /usr/local/lib/python3.9/site-packages \
-    && patch -p1 < /var/www/scylla/70b7050abe.patch
-
-FROM python:3.9-alpine
+FROM python:3.9-alpine as prod
 
 LABEL maintainer="WildCat <wildcat.name@gmail.com>"
 
