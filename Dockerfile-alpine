@@ -1,11 +1,31 @@
-FROM python:3.9-alpine as build
+FROM python:3.9-alpine as python-build
 
-RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl curl-dev openssl-dev patch
+RUN apk add --update --no-cache g++ gcc libxslt-dev make build-base curl curl-dev openssl-dev patch nodejs npm util-linux python2
+WORKDIR /root
+
+COPY . .
+RUN cp -s /usr/bin/python2 /usr/bin/python3
+RUN npm install
+RUN make assets-build
+
 
 RUN mkdir -p /var/www/scylla
 WORKDIR /var/www/scylla
 
-RUN pip install scylla
+RUN mkdir assets \
+  && cp -vr /root/scylla/assets assets/
+
+RUN apk del python2
+RUN rm /usr/bin/python3
+
+COPY requirements.txt .
+
+RUN /usr/local/bin/pip install -r requirements.txt \
+ && python -m playwright install
+
+COPY . .
+RUN python setup.py install
+
 
 FROM python:3.9-alpine as prod
 
@@ -13,7 +33,8 @@ LABEL maintainer="WildCat <wildcat.name@gmail.com>"
 
 RUN apk add --update --no-cache libxslt-dev curl-dev
 
-COPY --from=build /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+COPY --from=python-build /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+COPY --from=python-build /root/.cache/ms-playwright /root/.cache/ms-playwright
 
 WORKDIR /var/www/scylla
 VOLUME /var/www/scylla
