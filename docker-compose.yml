@@ -1,12 +1,13 @@
-version: '3.8'
-
+version: "3"
 services:
   scylla:
+    image: scylla-ubuntu:v3
     build:
       context: .
-      target: prod
-    volumes:
-      - /var/www/scylla:/var/www/scylla
+      dockerfile: Dockerfile-ubuntu
     ports:
       - "127.0.0.1:8899:8899"
       - "127.0.0.1:8081:8081"
+    volumes:
+      - /var/www/scylla:/var/www/scylla
+
